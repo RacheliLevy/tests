@@ -1,0 +1,23 @@
+1.1 SELECT * FROM [messages] where id is not null
+1.2.  select m1.msg+' '+m2.msg
+    from  [messages] as m1 with (nolock) 
+    		inner join [messages] m2 with (nolock) on m1.id = m2.id +1 and m1.type = m2.type +1 
+    where m1.type = 83 and m2.type = 84
+
+2.
+GO  
+CREATE PROCEDURE checkdescendants  @client_id int
+AS  
+    DECLARE @descendants int
+    DECLARE @Owner varchar(10)
+    set @descendants =  0
+
+    SELECT @Owner = Owner  FROM client where client_id  = @client_id
+    WHILE (@Owner is not null) 
+    BEGIN 
+        set @descendants =  @descendants + 1
+        @client_id = @Owner 
+        SELECT @Owner = Owner  FROM client where client_id  = @client_id        
+    END
+RETURN @descendants 
+GO 
